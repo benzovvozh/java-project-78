@@ -3,14 +3,15 @@ package hexlet.code.schemas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringSchema {
+public final class StringSchema extends BaseSchema<String> {
+
 
     private String string;
     private int minLength = 0;
     private boolean isRequired = false;
     List<String> subStrings = new ArrayList<>();
 
-
+    @Override
     public StringSchema required() {
         this.isRequired = true;
         return this;
@@ -27,6 +28,7 @@ public class StringSchema {
         return this;
     }
 
+    @Override
     public boolean isValid(String string) {
         if (isRequired && (string == null || string.isEmpty())) {
             return false;

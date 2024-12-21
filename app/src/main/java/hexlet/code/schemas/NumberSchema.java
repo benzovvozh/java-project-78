@@ -1,8 +1,5 @@
 package hexlet.code.schemas;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class NumberSchema extends BaseSchema<Integer> {
     private boolean isRequired = false;
     private boolean isPositive = false;

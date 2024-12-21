@@ -5,8 +5,6 @@ import java.util.List;
 
 public final class StringSchema extends BaseSchema<String> {
 
-
-    private String string;
     private int minLength = 0;
     private boolean isRequired = false;
     List<String> subStrings = new ArrayList<>();

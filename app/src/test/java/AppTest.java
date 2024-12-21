@@ -1,6 +1,8 @@
 import hexlet.code.Validator;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AppTest {
@@ -111,4 +113,61 @@ class AppTest {
         schema.required();
         assertEquals(false, schema.positive().range(1, 5).isValid(10));
     }
+
+    @Test
+    void mapSchemaUnRequiredTest1() {
+        Validator v = new Validator();
+        var schema = v.map();
+        assertEquals(true, schema.isValid(null));
+    }
+
+    @Test
+    void mapSchemaUnRequiredTest2() {
+        var data = new HashMap<String, String>();
+        data.put("key1", "value1");
+        Validator v = new Validator();
+        var schema = v.map();
+        assertEquals(true, schema.isValid(data));
+    }
+
+    @Test
+    void mapSchemaRequiredTest1() {
+        var data = new HashMap<String, String>();
+        data.put("key1", "value1");
+        Validator v = new Validator();
+        var schema = v.map();
+        schema.required();
+        assertEquals(true, schema.isValid(data));
+    }
+
+    @Test
+    void mapSchemaRequiredTest2() {
+        var data = new HashMap<String, String>();
+        data.put("key1", "value1");
+        Validator v = new Validator();
+        var schema = v.map();
+        schema.required();
+        assertEquals(false, schema.isValid(null));
+    }
+
+    @Test
+    void mapSchemaRequiredTest3() {
+        var data = new HashMap<String, String>();
+        data.put("key1", "value1");
+        data.put("key2", "value2");
+        Validator v = new Validator();
+        var schema = v.map();
+        schema.required();
+        assertEquals(true, schema.sizeof(2).isValid(data));
+    }@Test
+    void mapSchemaRequiredTest4() {
+        var data = new HashMap<String, String>();
+        data.put("key1", "value1");
+        data.put("key2", "value2");
+        Validator v = new Validator();
+        var schema = v.map();
+        schema.required();
+        assertEquals(false, schema.sizeof(3).isValid(data));
+    }
+
 }

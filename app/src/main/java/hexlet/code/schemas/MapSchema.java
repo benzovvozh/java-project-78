@@ -5,7 +5,7 @@ import java.util.Map;
 public class MapSchema extends BaseSchema<Map> {
     private Integer mapSize = null;
     private boolean isRequired = false;
-    private Map<String, BaseSchema<String>> schemas ;
+    private Map<String, BaseSchema<String>> schemas;
 
     @Override
     public MapSchema required() {

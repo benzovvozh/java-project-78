@@ -17,9 +17,9 @@ public class NumberSchema extends BaseSchema<Integer> {
         return this;
     }
 
-    public NumberSchema range(Integer min, Integer max) {
-        this.min = min;
-        this.max = max;
+    public NumberSchema range(Integer minimal, Integer maximum) {
+        this.min = minimal;
+        this.max = maximum;
         return this;
     }
 
@@ -34,10 +34,11 @@ public class NumberSchema extends BaseSchema<Integer> {
             }
 
         }
-        if (number != null)
+        if (number != null) {
             if (isPositive && number <= 0) {
                 return false;
             }
+        }
         return true;
     }
 

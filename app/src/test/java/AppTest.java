@@ -1,7 +1,9 @@
 import hexlet.code.Validator;
+import hexlet.code.schemas.BaseSchema;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -159,7 +161,9 @@ class AppTest {
         var schema = v.map();
         schema.required();
         assertEquals(true, schema.sizeof(2).isValid(data));
-    }@Test
+    }
+
+    @Test
     void mapSchemaRequiredTest4() {
         var data = new HashMap<String, String>();
         data.put("key1", "value1");
@@ -168,6 +172,54 @@ class AppTest {
         var schema = v.map();
         schema.required();
         assertEquals(false, schema.sizeof(3).isValid(data));
+    }
+
+    @Test
+    void mapSchemaShapeTest1() {
+        Validator v = new Validator();
+        var schema = v.map();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        schemas.put("firstName", v.string().required());
+        schemas.put("lastName", v.string().required().minLength(2));
+
+        schema.shape(schemas);
+        Map<String, String> human1 = new HashMap<>();
+        human1.put("firstName", "John");
+        human1.put("lastName", "Smith");
+        assertEquals(true, schema.isValid(human1));
+
+    }
+
+    @Test
+    void mapSchemaShapeTest2() {
+        Validator v = new Validator();
+        var schema = v.map();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        schemas.put("firstName", v.string().required());
+        schemas.put("lastName", v.string().required().minLength(2));
+
+        schema.shape(schemas);
+        Map<String, String> human2 = new HashMap<>();
+        human2.put("firstName", "John");
+        human2.put("lastName", null);
+        assertEquals(false, schema.isValid(human2));
+
+    }
+
+    @Test
+    void mapSchemaShapeTest3() {
+        Validator v = new Validator();
+        var schema = v.map();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        schemas.put("firstName", v.string().required());
+        schemas.put("lastName", v.string().required().minLength(2));
+
+        schema.shape(schemas);
+        Map<String, String> human3 = new HashMap<>();
+        human3.put("firstName", "Anna");
+        human3.put("lastName", "B");
+        assertEquals(false, schema.isValid(human3));
+
     }
 
 }

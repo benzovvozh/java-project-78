@@ -21,8 +21,9 @@ public final class StringSchema extends BaseSchema<String> {
     }
 
     public StringSchema contains(String subString) {
-        if (subString != null && !(subString.isEmpty()))
+        if (subString != null && !(subString.isEmpty())) {
             subStrings.add(subString);
+        }
         return this;
     }
 

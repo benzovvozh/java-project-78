@@ -178,7 +178,7 @@ class AppTest {
     void mapSchemaShapeTest1() {
         Validator v = new Validator();
         var schema = v.map();
-        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        Map<String, BaseSchema<?>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 
@@ -194,7 +194,7 @@ class AppTest {
     void mapSchemaShapeTest2() {
         Validator v = new Validator();
         var schema = v.map();
-        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        Map<String, BaseSchema<?>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 
@@ -210,7 +210,7 @@ class AppTest {
     void mapSchemaShapeTest3() {
         Validator v = new Validator();
         var schema = v.map();
-        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        Map<String, BaseSchema<?>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 
@@ -221,5 +221,85 @@ class AppTest {
         assertEquals(false, schema.isValid(human3));
 
     }
+    @Test
+    void stringSchemaCombinedChecksTest1() {
+        Validator validator = new Validator();
+        var schema = validator.string().required().contains("abc").minLength(5);
+
+        assertEquals(true, schema.isValid("abcde"));
+        assertEquals(false, schema.isValid("abcd"));
+        assertEquals(false, schema.isValid("xyz"));
+        assertEquals(false, schema.isValid(""));
+    }
+    @Test
+    void numberSchemaCombinedChecksTest1() {
+        Validator validator = new Validator();
+        var schema = validator.number().required().positive().range(10, 20);
+
+        assertEquals(true, schema.isValid(15));
+        assertEquals(false, schema.isValid(5));
+        assertEquals(false, schema.isValid(25));
+        assertEquals(false, schema.isValid(-10));
+        assertEquals(false, schema.isValid(null));
+    }
+    @Test
+    void mapSchemaShapeCombinedChecksTest1() {
+        Validator validator = new Validator();
+        var schema = validator.map();
+
+        Map<String, BaseSchema<?>> schemas = new HashMap<>();
+        schemas.put("name", validator.string().required().contains("Doe").minLength(5));
+        schemas.put("age", validator.number().required().positive().range(18, 100));
+
+        schema.shape(schemas);
+
+        Map<String, Object> validData = Map.of(
+                "name", "John Doe",
+                "age", 30
+        );
+        Map<String, Object> invalidData1 = Map.of(
+                "name", "Doe",
+                "age", 30
+        );
+        Map<String, Object> invalidData2 = Map.of(
+                "name", "John Doe",
+                "age", 15
+        );
+
+        assertEquals(true, schema.isValid(validData));        // Все проверки проходят
+        assertEquals(false, schema.isValid(invalidData1));    // Имя не удовлетворяет minLength
+        assertEquals(false, schema.isValid(invalidData2));    // Возраст не попадает в диапазон
+    }
+
+    @Test
+    void mapSchemaShapeCombinedChecksTest2() {
+        Validator validator = new Validator();
+        var schema = validator.map();
+
+        Map<String, BaseSchema<?>> schemas = new HashMap<>();
+        schemas.put("firstName", validator.string().required());
+        schemas.put("lastName", validator.string().required().minLength(2));
+        schemas.put("age", validator.number().positive().range(18, 99));
+
+        schema.shape(schemas);
+
+        Map<String, Object> data = Map.of(
+                "firstName", "Alice",
+                "lastName", "Smith",
+                "age", 20
+        );
+
+        assertEquals(true, schema.isValid(data)); // Валидная структура
+
+        Map<String, Object> invalidData = Map.of(
+                "firstName", "Alice",
+                "lastName", "S", // Не соответствует minLength
+                "age", 20
+        );
+
+        assertEquals(false, schema.isValid(invalidData)); // Не валидно из-за lastName
+    }
+
+
 
 }

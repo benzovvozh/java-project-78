@@ -5,17 +5,17 @@ import java.util.Map;
 public class MapSchema extends BaseSchema<Map> {
 
 
-    public MapSchema required() {
+    public final MapSchema required() {
         addCheck("required", value -> value != null);
         return this;
     }
 
-    public MapSchema sizeof(Integer number) {
+    public final MapSchema sizeof(Integer number) {
         addCheck("sizeof", value -> value.size() == number);
         return this;
     }
 
-    public <T> MapSchema shape(Map<String, BaseSchema<T>> schemas) {
+    public final <T> MapSchema shape(Map<String, BaseSchema<T>> schemas) {
 
         addCheck("shape", value -> {
             if (value == null) {

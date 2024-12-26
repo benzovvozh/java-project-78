@@ -7,6 +7,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 class AppTest {
 
     @Test
@@ -178,7 +179,7 @@ class AppTest {
     void mapSchemaShapeTest1() {
         Validator v = new Validator();
         var schema = v.map();
-        Map<String, BaseSchema<?>> schemas = new HashMap<>();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 
@@ -194,7 +195,7 @@ class AppTest {
     void mapSchemaShapeTest2() {
         Validator v = new Validator();
         var schema = v.map();
-        Map<String, BaseSchema<?>> schemas = new HashMap<>();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 
@@ -210,7 +211,7 @@ class AppTest {
     void mapSchemaShapeTest3() {
         Validator v = new Validator();
         var schema = v.map();
-        Map<String, BaseSchema<?>> schemas = new HashMap<>();
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
         schemas.put("firstName", v.string().required());
         schemas.put("lastName", v.string().required().minLength(2));
 
@@ -246,61 +247,45 @@ class AppTest {
     }
 
     @Test
-    void mapSchemaShapeCombinedChecksTest1() {
-        Validator validator = new Validator();
-        var schema = validator.map();
+    public void testMapValidator() {
+        var v = new Validator();
+        var schema = v.map();
 
-        Map<String, BaseSchema<?>> schemas = new HashMap<>();
-        schemas.put("name", validator.string().required().contains("Ivan").minLength(5));
-        schemas.put("age", validator.number().required().positive().range(18, 100));
+        assertEquals(true, schema.isValid(null));
+        assertEquals(true, schema.isValid(new HashMap<>()));
 
+        schema.required();
+        assertEquals(false, schema.isValid(null));
+        assertEquals(true, schema.isValid(new HashMap<>()));
+
+        schema.sizeof(2);
+        assertEquals(false, schema.isValid(new HashMap<>()));
+        Map<String, String> actual1 = new HashMap<>();
+        actual1.put("key1", "value1");
+        assertEquals(false, schema.isValid(actual1));
+        actual1.put("key2", "value2");
+        assertEquals(true, schema.isValid(actual1));
+
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        schemas.put("firstName", v.string().required().contains("ya"));
+        schemas.put("lastName", v.string().required().contains("ov"));
         schema.shape(schemas);
 
-        Map<String, Object> validData = Map.of(
-                "name", "Ivan Ivanov",
-                "age", 30
-        );
-        Map<String, Object> invalidData1 = Map.of(
-                "name", "Ivan",
-                "age", 30
-        );
-        Map<String, Object> invalidData2 = Map.of(
-                "name", "Ivan Ivanov",
-                "age", 15
-        );
+        Map<String, String> actual2 = new HashMap<>();
+        actual2.put("firstName", "Kolya");
+        actual2.put("lastName", "Ivanov");
+        assertEquals(true, schema.isValid(actual2));
 
-        assertEquals(true, schema.isValid(validData));        // Все проверки проходят
-        assertEquals(false, schema.isValid(invalidData1));    // Имя не удовлетворяет minLength
-        assertEquals(false, schema.isValid(invalidData2));    // Возраст не попадает в диапазон
+        Map<String, String> actual3 = new HashMap<>();
+        actual3.put("firstName", "Maya");
+        actual3.put("lastName", "Krasnova");
+        assertEquals(true, schema.isValid(actual3));
+
+        Map<String, String> actual4 = new HashMap<>();
+        actual4.put("firstName", "John");
+        actual4.put("lastName", "Jones");
+        assertEquals(false, schema.isValid(actual4));
     }
 
-    @Test
-    void mapSchemaShapeCombinedChecksTest2() {
-        Validator validator = new Validator();
-        var schema = validator.map();
-
-        Map<String, BaseSchema<?>> schemas = new HashMap<>();
-        schemas.put("firstName", validator.string().required());
-        schemas.put("lastName", validator.string().required().minLength(2));
-        schemas.put("age", validator.number().positive().range(18, 99));
-
-        schema.shape(schemas);
-
-        Map<String, Object> data = Map.of(
-                "firstName", "Alice",
-                "lastName", "Smith",
-                "age", 20
-        );
-
-        assertEquals(true, schema.isValid(data)); // Валидная структура
-
-        Map<String, Object> invalidData = Map.of(
-                "firstName", "Alice",
-                "lastName", "S", // Не соответствует minLength
-                "age", 20
-        );
-
-        assertEquals(false, schema.isValid(invalidData)); // Не валидно из-за lastName
-    }
 
 }

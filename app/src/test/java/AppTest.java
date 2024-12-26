@@ -299,6 +299,11 @@ class AppTest {
 
         assertEquals(false, schema.isValid(invalidData)); // Не валидно из-за lastName
     }
+    @Test
+    void ValidatorTest(){
+        Validator v = new Validator();
+        var schema = v.string().required();
+    }
 
 
 

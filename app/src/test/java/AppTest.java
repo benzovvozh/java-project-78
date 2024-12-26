@@ -221,6 +221,7 @@ class AppTest {
         assertEquals(false, schema.isValid(human3));
 
     }
+
     @Test
     void stringSchemaCombinedChecksTest1() {
         Validator validator = new Validator();
@@ -231,6 +232,7 @@ class AppTest {
         assertEquals(false, schema.isValid("xyz"));
         assertEquals(false, schema.isValid(""));
     }
+
     @Test
     void numberSchemaCombinedChecksTest1() {
         Validator validator = new Validator();
@@ -242,6 +244,7 @@ class AppTest {
         assertEquals(false, schema.isValid(-10));
         assertEquals(false, schema.isValid(null));
     }
+
     @Test
     void mapSchemaShapeCombinedChecksTest1() {
         Validator validator = new Validator();
@@ -249,7 +252,7 @@ class AppTest {
 
         Map<String, BaseSchema<?>> schemas = new HashMap<>();
         schemas.put("name", validator.string().required().contains("Ivan").minLength(5));
-        schemas.put("age",  validator.number().required().positive().range(18, 100));
+        schemas.put("age", validator.number().required().positive().range(18, 100));
 
         schema.shape(schemas);
 
@@ -299,12 +302,5 @@ class AppTest {
 
         assertEquals(false, schema.isValid(invalidData)); // Не валидно из-за lastName
     }
-    @Test
-    void ValidatorTest(){
-        Validator v = new Validator();
-        var schema = v.string().required();
-    }
-
-
 
 }

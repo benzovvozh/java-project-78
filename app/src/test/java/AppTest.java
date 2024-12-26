@@ -248,21 +248,21 @@ class AppTest {
         var schema = validator.map();
 
         Map<String, BaseSchema<?>> schemas = new HashMap<>();
-        schemas.put("name", validator.string().required().contains("Doe").minLength(5));
-        schemas.put("age", validator.number().required().positive().range(18, 100));
+        schemas.put("name", validator.string().required().contains("Ivan").minLength(5));
+        schemas.put("age",  validator.number().required().positive().range(18, 100));
 
         schema.shape(schemas);
 
         Map<String, Object> validData = Map.of(
-                "name", "John Doe",
+                "name", "Ivan Ivanov",
                 "age", 30
         );
         Map<String, Object> invalidData1 = Map.of(
-                "name", "Doe",
+                "name", "Ivan",
                 "age", 30
         );
         Map<String, Object> invalidData2 = Map.of(
-                "name", "John Doe",
+                "name", "Ivan Ivanov",
                 "age", 15
         );
 
